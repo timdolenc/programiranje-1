@@ -1,5 +1,7 @@
 import csv
 import os
+import requests
+import re
 
 ###############################################################################
 # Najprej definirajmo nekaj pomožnih orodij za pridobivanje podatkov s spleta.
@@ -8,9 +10,9 @@ import os
 # definirajte URL glavne strani bolhe za oglase z mačkami
 cats_frontpage_url = 'http://www.bolha.com/zivali/male-zivali/macke/'
 # mapa, v katero bomo shranili podatke
-cat_directory = 'TODO'
+cat_directory = "/Users/timdolenc/Desktop/PROGRAMIRANJE/programiranje-1/02-zajem-podatkov/vaje/izvozne"
 # ime datoteke v katero bomo shranili glavno stran
-frontpage_filename = 'TODO'
+frontpage_filename = 'glavna_stran.html'
 # ime CSV datoteke v katero bomo shranili podatke
 csv_filename = 'TODO'
 
@@ -21,13 +23,15 @@ def download_url_to_string(url):
     """
     try:
         # del kode, ki morda sproži napako
-        page_content = 'TODO'
-    except 'TODO':
-        # koda, ki se izvede pri napaki
-        # dovolj je če izpišemo opozorilo in prekinemo izvajanje funkcije
-        raise NotImplementedError()
-    # nadaljujemo s kodo če ni prišlo do napake
+        response = requests.get(url)
+        page_content = response.text
+        return page_content
+    
+    except Exception as e:
+        print(f"Napaka pri prenosu: {url} ::", e)
+        return None
     raise NotImplementedError()
+
 
 
 def save_string_to_file(text, directory, filename):
@@ -36,10 +40,12 @@ def save_string_to_file(text, directory, filename):
     niz "directory" prazen datoteko ustvari v trenutni mapi.
     """
     os.makedirs(directory, exist_ok=True)
-    path = os.path.join(directory, filename)
+    path = os.path.join(directory, filename) #združiš direktorij z imenom datoteke da nerabiš posebi lepit
     with open(path, 'w', encoding='utf-8') as file_out:
         file_out.write(text)
     return None
+
+
 
 
 # Definirajte funkcijo, ki prenese glavno stran in jo shrani v datoteko.
@@ -48,7 +54,13 @@ def save_string_to_file(text, directory, filename):
 def save_frontpage(page, directory, filename):
     """Funkcija shrani vsebino spletne strani na naslovu "page" v datoteko
     "directory"/"filename"."""
-    raise NotImplementedError()
+    vsebina = download_url_to_string(page)
+    save_string_to_file(vsebina, directory, filename)
+    print("datoteka shranjena")
+
+
+
+    
 
 
 ###############################################################################
@@ -58,7 +70,13 @@ def save_frontpage(page, directory, filename):
 
 def read_file_to_string(directory, filename):
     """Funkcija vrne celotno vsebino datoteke "directory"/"filename" kot niz."""
-    raise NotImplementedError()
+    path = os.path.join(directory, filename)
+    with open(path, "r") as f:
+        vsebina = f.read()
+    return vsebina
+
+
+
 
 
 # Definirajte funkcijo, ki sprejme niz, ki predstavlja vsebino spletne strani,
@@ -70,7 +88,12 @@ def read_file_to_string(directory, filename):
 def page_to_ads(page_content):
     """Funkcija poišče posamezne oglase, ki se nahajajo v spletni strani in
     vrne seznam oglasov."""
-    raise NotImplementedError()
+    vzorec = r'<li class=\"EntityList-item EntityList-item.*?</li>' #to zdej zajame celotn oglas, pol pa bomo delali z manjšimi deli
+    oglasi = re.findall(vzorec, page_content, re.DOTALL | re.IGNORECASE) #re.dotall da . matcha tud nove vrstice #flegi, en je še case insensitive, vlke male da isto. | da da oboje šteje. dotall, re.compile vzeme pattern pa ga prevede v neko vmesno predstavitev bolj učinkovito, lahk bi dal re.compile pa ze gor dau te flage pol pa sam sku s findall v naslednji vrstici
+    print(len(oglasi))
+    return oglasi
+
+
 
 
 # Definirajte funkcijo, ki sprejme niz, ki predstavlja oglas, in izlušči
@@ -140,19 +163,18 @@ def main(redownload=True, reparse=True):
     3. Podatke shrani v csv datoteko
     """
     # Najprej v lokalno datoteko shranimo glavno stran
-
+    save_frontpage(cats_frontpage_url, cat_directory, "glavna_stran.html")
     # Iz lokalne (html) datoteke preberemo podatke
-
+    vsebina = read_file_to_string(cat_directory, frontpage_filename)
     # Podatke preberemo v lepšo obliko (seznam slovarjev)
-
+    oglasi = page_to_ads(vsebina)
     # Podatke shranimo v csv datoteko
 
     # Dodatno: S pomočjo parametrov funkcije main omogoči nadzor, ali se
     # celotna spletna stran ob vsakem zagon prenese (četudi že obstaja)
     # in enako za pretvorbo
 
-    raise NotImplementedError()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': #
     main()
