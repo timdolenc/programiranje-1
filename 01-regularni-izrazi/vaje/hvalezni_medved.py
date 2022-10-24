@@ -25,6 +25,15 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> find_words(test_text, 'de')
 # {'izdere', 'debel', 'oddide', 'začudeno'}
 ###############################################################################
+import re
+def find_words(niz, podniz):
+    vzorec = "\\b\\w*" + podniz + r"\w*\b" #\b dva skupi ubistvu mesto kjer se zamenjata šrkovni in nečrkovni znak, če daš r"kar tu not piše se normalno tretira \n nima pomena, not pa lahk pišeš te stvari pa bo našlo"  na
+    return set(re.findall(vzorec, niz)) #re.findall(f"\\W.*{podniz}.*\\W", niz)
+    
+print(find_words(test_text, 'de'))
+            
+
+
 
 
 ###############################################################################
@@ -34,7 +43,11 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> find_prefix(test_text, 'zi')
 # {'zibala', 'zibel', 'zibelko'}
 ###############################################################################
+def find_prefix(test_text, predpona):
+    vzorec = "\\b" + predpona + r"\w+\b"
+    return set(re.findall(vzorec, test_text))
 
+print(find_prefix(test_text, "zi"))
 
 ###############################################################################
 # 3) Sestavite funkcijo [find_suffix], ki vrne množico vseh besed, ki se
@@ -43,7 +56,11 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> find_suffix(test_text, 'la')
 # {'zibala', 'razveselila', 'prestrašila', 'šivala', 'opazila', 'tla'}
 ###############################################################################
+def find_suffix(test_text, pripona):
+    vzorec = f"\\b\\w+{pripona}\\b"
+    return set(re.findall(vzorec, test_text))
 
+print(find_suffix(test_text, "la"))
 
 ###############################################################################
 # 4) Sestavite funkcijo [double_letters], ki sprejme niz in vrne množico vseh
@@ -52,3 +69,18 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> double_letters('A volunteer is worth twenty pressed men.')
 # {'volunteer', 'pressed'}
 ###############################################################################
+
+def double_letters(niz):
+    vzorec = r"\b\w*(\w)\1\w*"
+    return set(re.findall(vzorec, test_text))
+    
+print(double_letters('A volunteer is worth twenty pressed men.'))
+
+
+
+
+
+
+
+
+#pattern = r"\b(\w*(\w)\2\w)\b"

@@ -1,0 +1,33 @@
+- cmd, shift, p -> napises pull from..., pol pa lahk zbiraš a boš pullu od profesorja al sebe
+- kk poženeš ocaml cmd, shift, p ---> run task 
+
+
+1. REGULARNI IZRAZI
+v osnovi lovijo regularni sam do konca vrstice
+daš replace
+$1 se skličeš na skuoino pa klikneš on desn gumb pa zamenja
+zadetek.group(1)
+(?P<id>\d{7}), če tk oblikuješ skupine v regularnem izrazu pa pol returnaš
+    v neki funkciji zadetek.groupdict() si tk poimenoval keyse
+če daš oklepaje čez cel vzorec lahk reg izraz razbiješ na več r''-jev brez da
+    bi se rabu sekirat za presledke vmes
+re.finditer vrne nek poseben match objekt v kirem maš not vse zajeto od kam do kam sega pa vse
+
+2. ZAJEM PODATKOV
+v linku gor maš parametre kot count=250 -kok jih je na stran
+for start in range(1, 100, 250)
+
+import requests
+r = requests.get(url) vrne nek objekt ko zajema podatke o tem
+r.text je vsebina strani
+.sub() tk lahk vse pojavitve vzorca zamenjaš z nekim nizom
+csv v vsaki vrstici so vrednosti ločene z vejico, vrstica je vrstica 
+če niz vsebuje vejica v csv ga daš v narekovaje
+
+vaje
+ko neki vlečeš iz strani je fajn da shraniš v neko datoteko čene si rus
+pwd ti da dol v terminalu v kirem direktoriju si
+
+kk do konca gres do lija .*?</li> ,  vprašaj tuki nardi nepožrešno
+.* matcha karkoli razen nove vrstice, v regex 101 naštimaš singleline, na gm
+

@@ -15,7 +15,7 @@
                 "command": "python -i \"${file}\""
             },
             "osx": {
-                "command": "python -i \"${file}\""
+                "command": "python3 -i \"${file}\""
             }
         },
         {
@@ -32,7 +32,7 @@
                 "command": "ocaml -init \"${file}\""
             },
             "osx": {
-                "command": "ocaml -init \"${file}\""
+                "command": "/Users/timdolenc/.opam/default/bin/ocaml -init \"${file}\""
             }
         }
     ]

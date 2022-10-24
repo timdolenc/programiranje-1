@@ -88,7 +88,7 @@ def read_file_to_string(directory, filename):
 def page_to_ads(page_content):
     """Funkcija poišče posamezne oglase, ki se nahajajo v spletni strani in
     vrne seznam oglasov."""
-    vzorec = r'<li class=\"EntityList-item EntityList-item.*?</li>' #to zdej zajame celotn oglas, pol pa bomo delali z manjšimi deli
+    vzorec = r'<li class=\" EntityList-item EntityList-item--[RV].*?</li>' #tam not sta R in V za VauVau inRegular, ostalo so drugi bannerji
     oglasi = re.findall(vzorec, page_content, re.DOTALL | re.IGNORECASE) #re.dotall da . matcha tud nove vrstice #flegi, en je še case insensitive, vlke male da isto. | da da oboje šteje. dotall, re.compile vzeme pattern pa ga prevede v neko vmesno predstavitev bolj učinkovito, lahk bi dal re.compile pa ze gor dau te flage pol pa sam sku s findall v naslednji vrstici
     print(len(oglasi))
     return oglasi
@@ -103,7 +103,16 @@ def page_to_ads(page_content):
 def get_dict_from_ad_block(block):
     """Funkcija iz niza za posamezen oglasni blok izlušči podatke o imenu, ceni
     in opisu ter vrne slovar, ki vsebuje ustrezne podatke."""
-    raise NotImplementedError()
+    vzorec = re.compile(
+        r'<li class=\" EntityList-item EntityList-item--[RV].*?' #ti ? so za min požrešnost
+        r'<h3 class=\"entity-title\"><.*?>(?P<ime_oglasa>.*?)<.*?'
+        r'<strong class=\"price price--hrk\">(?P<cena>.*?)[<&\n]',  
+        flags=re.DOTALL | re.IGNORECASE
+    )
+    for zadetek in re.finditer(vzorec, block):
+        slovar = zadetek.groupdict()
+        return slovar
+
 
 
 # Definirajte funkcijo, ki sprejme ime in lokacijo datoteke, ki vsebuje
@@ -166,8 +175,19 @@ def main(redownload=True, reparse=True):
     save_frontpage(cats_frontpage_url, cat_directory, "glavna_stran.html")
     # Iz lokalne (html) datoteke preberemo podatke
     vsebina = read_file_to_string(cat_directory, frontpage_filename)
+
     # Podatke preberemo v lepšo obliko (seznam slovarjev)
     oglasi = page_to_ads(vsebina)
+
+
+    števec = 0
+    for i in range(0, len(oglasi)):   
+        block = oglasi[i]
+        slovar = get_dict_from_ad_block(block)
+        print(števec, slovar)
+        števec += 1
+    print(števec)
+   
     # Podatke shranimo v csv datoteko
 
     # Dodatno: S pomočjo parametrov funkcije main omogoči nadzor, ali se
