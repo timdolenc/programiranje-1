@@ -8,36 +8,70 @@
  - : int = 4
 [*----------------------------------------------------------------------------*)
 
-let rec square = ()
+(*ctrl shift p da pozenes, naj bo funkcija f z argumentom x*)
+let f x =
+  let a = x+x in
+  let b = x*x in
+  a*b
+let square x = x * x (*vsaka stvar v ocamlu neki vrne*)
+
+let rec dolzina list = match list with (*mors dat rec ce je rekurzivna*)
+  |[] -> 0
+  |x :: xs -> 1 + dolzina xs
+
+(*let rec dolzina list = function (*to je isto neki caka argument alneki*)
+  |[] -> 0
+  |x :: xs -> 1 + dolzina xs*)
 
 (*----------------------------------------------------------------------------*]
  Funkcija [middle_of_triple] vrne srednji element trojice.
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # middle_of_triple (true, false, true);;
+ # middle_of_triple (true, false, true);; to je tuple seznam ma ; vmes
  - : bool = false
 [*----------------------------------------------------------------------------*)
 
-let rec middle_of_triple = ()
+let middle_of_triple (a, b, c) = b
+
+(*let rec middle_of_triple trpl =
+    let (a,b,c) = trpl
+    in b*)
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [starting_element] vrne prvi element danega seznama. V primeru
  prekratkega seznama vrne napako.
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # starting_element [1; 2; 3; 4];;
+ # starting_element2 [1; 2; 3; 4];;
  - : int = 1
 [*----------------------------------------------------------------------------*)
 
-let rec starting_element = ()
+let starting_element sez = 
+  match sez with
+  | x :: xs -> x
+  | _ -> failwith "Prekratek seznam"
+
+let starting_element2 = function
+  | x :: _ -> x
+  | _ -> failwith "bla"
+
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [multiply] zmnoži vse elemente seznama. V primeru praznega seznama
  vrne vrednost, ki je smiselna za rekurzijo.
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # multiply [2; 4; 6];;
+ # multiply2 [2; 4; 6];;
  - : int = 48
 [*----------------------------------------------------------------------------*)
 
-let rec multiply = ()
+let rec multiply sez = 
+  match sez with
+  | [] -> 1
+  | h :: tail -> h * multiply tail
+
+let rec multiply2 = function
+  | [] -> 1
+  | h :: tail -> h * multiply tail
 
 (*----------------------------------------------------------------------------*]
  Napišite funkcijo ekvivalentno python kodi:
@@ -54,7 +88,11 @@ let rec multiply = ()
  - : int list = [-1; 7; 0]
 [*----------------------------------------------------------------------------*)
 
-let rec sum_int_pairs = ()
+let rec sum_int_pairs = function
+    | [] -> []
+    | (a,b) :: xs -> (a+b)  :: sum_int_pairs xs
+
+      
 
 (*----------------------------------------------------------------------------*]
  Funkcija [get k list] poišče [k]-ti element v seznamu [list]. Številčenje
@@ -64,8 +102,15 @@ let rec sum_int_pairs = ()
  # get 2 [0; 0; 1; 0; 0; 0];;
  - : int = 1
 [*----------------------------------------------------------------------------*)
+let rec get k list =
+  match (k,list) with
+  | (_, []) -> failwith "prekr"
+  | (k, x :: tail) -> if k <= 0 then x else get (k-1, tail)
 
-let rec get = ()
+let rec get k = function (*ker je function ve, da je še en parameter*)
+| [] -> failwith "prekr"
+| x :: tail -> if k <= 0 then x else get (k-1, tail)
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [double] podvoji pojavitve elementov v seznamu.
@@ -74,7 +119,10 @@ let rec get = ()
  - : int list = [1; 1; 2; 2; 3; 3]
 [*----------------------------------------------------------------------------*)
 
-let rec double = ()
+let rec double = function
+      | [] -> []
+      | x :: xs -> x :: x :: double xs
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [insert x k list] na [k]-to mesto seznama [list] vrine element [x].
@@ -86,7 +134,14 @@ let rec double = ()
  - : int list = [1; 0; 0; 0; 0; 0]
 [*----------------------------------------------------------------------------*)
 
-let rec insert = ()
+(*let rec insert x s list = 
+  match *)
+
+let rec insert x s = function (*h kot head, tisti parameter brez imena*)
+  | [] -> x :: []
+  | h :: tail -> 
+    if k <= 0 then x :: h :: tail
+    else h :: insert x (k-1) tail 
 
 (*----------------------------------------------------------------------------*]
  Funkcija [divide k list] seznam razdeli na dva seznama. Prvi vsebuje prvih [k]
@@ -99,7 +154,9 @@ let rec insert = ()
  - : int list * int list = ([1; 2; 3; 4; 5], [])
 [*----------------------------------------------------------------------------*)
 
-let rec divide = ()
+let rec divide k list =
+  match (k, list) with
+  | (_,[]) ->  
 
 (*----------------------------------------------------------------------------*]
  Funkcija [rotate n list] seznam zavrti za [n] mest v levo. Predpostavimo, da

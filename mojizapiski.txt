@@ -2,6 +2,12 @@
 - kk poženeš ocaml cmd, shift, p ---> run task 
 
 
+- KK REPOZITORIJ GITHUB
+	terminal: 1: pwd(kje je trenutni working directory), 2. cd(nastimas directory)
+	3: ls (ka je not) 4: git init, 5: git add . 6: git status 
+	7: git commit -m "sporocilo" 8: git remote add origin [URL]
+	9: git push -u origin master 
+
 1. REGULARNI IZRAZI
 v osnovi lovijo regularni sam do konca vrstice
 daš replace
@@ -31,3 +37,18 @@ pwd ti da dol v terminalu v kirem direktoriju si
 kk do konca gres do lija .*?</li> ,  vprašaj tuki nardi nepožrešno
 .* matcha karkoli razen nove vrstice, v regex 101 naštimaš singleline, na gm
 
+4.
+
+
+ISIN namest sam in ki vrne sam eno isin pa razpredelnico
+
+5. OCAML sintaksa 
+
+VAJE
+let naj bo <- 
+seznam v ocamlu je v eni izmed dveh oblik: 
+    prazen [] ali a::... (a je prvi element)
+    get -2, hoče dobit get -  2 ti pa hočes get(-2)
+let a ... = 
+    let b = ... in
+    izraz

@@ -30,7 +30,6 @@ def download_url_to_string(url):
     except Exception as e:
         print(f"Napaka pri prenosu: {url} ::", e)
         return None
-    raise NotImplementedError()
 
 
 
@@ -103,10 +102,11 @@ def page_to_ads(page_content):
 def get_dict_from_ad_block(block):
     """Funkcija iz niza za posamezen oglasni blok izlušči podatke o imenu, ceni
     in opisu ter vrne slovar, ki vsebuje ustrezne podatke."""
+    print(block)
     vzorec = re.compile(
         r'<li class=\" EntityList-item EntityList-item--[RV].*?' #ti ? so za min požrešnost
         r'<h3 class=\"entity-title\"><.*?>(?P<ime_oglasa>.*?)<.*?'
-        r'<strong class=\"price price--hrk\">(?P<cena>.*?)[<&\n]',  
+        r'<strong class=\"price price--hrk\">(?P<cena>.*?)<',  
         flags=re.DOTALL | re.IGNORECASE
     )
     for zadetek in re.finditer(vzorec, block):
@@ -123,7 +123,7 @@ def get_dict_from_ad_block(block):
 def ads_from_file(filename, directory):
     """Funkcija prebere podatke v datoteki "directory"/"filename" in jih
     pretvori (razčleni) v pripadajoč seznam slovarjev za vsak oglas posebej."""
-    raise NotImplementedError()
+
 
 
 ###############################################################################
