@@ -1,4 +1,4 @@
-from functools import cache
+#from functools import cache
 # =============================================================================
 # Najdaljše naraščajoče podzaporedje
 # =============================================================================
@@ -10,6 +10,23 @@ from functools import cache
 # Primer: v seznamu `[2, 3, 6, 8, 4, 4, 6, 7, 12, 8, 9]` kot rezultat vrne
 # podzaporedje `[2, 3, 4, 4, 6, 7, 8, 9]`.
 # -----------------------------------------------------------------------------
+
+
+def najdaljše_naraščajoče(sez):
+    def najdaljše_naraščajoče_ki_vseb(i,sez):
+        if sez == []:
+            return 0
+        elif sez[i] == min(sez[:i]):
+            return 1
+        return 1 + max([najdaljše_naraščajoče_ki_vseb(sez[j],sez) for j in range(len(sez)) if j<i and sez[j]<sez[i]])
+    return max([najdaljše_naraščajoče_ki_vseb(i,sez) for i in range(len(sez))])
+print(najdaljše_naraščajoče([2, 3, 6, 8, 4, 4, 6, 7, 12, 8, 9]))
+
+
+
+
+
+        
 
 # -----------------------------------------------------------------------------
 # Rešitev sedaj popravite tako, da funkcija `vsa_najdaljsa` vrne seznam vseh

@@ -134,7 +134,7 @@ let rec zip l1 l2 =
 let rec unzip = function
   |[] -> ([],[])
   |(x,y) :: tail -> let (xs, ys) = unzip tail in 
-    (x::xs, y::xs)  
+    (x::xs, y::ys)  
 
 (*----------------------------------------------------------------------------*]
  Funkcija [unzip_tlrec] je repno rekurzivna različica funkcije [unzip].
@@ -164,9 +164,10 @@ let rec unzip_tlrec list =
 [*----------------------------------------------------------------------------*)
 
 let rec loop condition f x =
-  while condition
-    x = f x
-  f x 
+  if condition x then
+    let x = f x in
+    loop condition f x
+  else x
 
 (*----------------------------------------------------------------------------*]
  Funkcija [fold_left_no_acc f list] sprejme seznam [x0; x1; ...; xn] in
@@ -178,7 +179,14 @@ let rec loop condition f x =
  - : string = "FICUS"
 [*----------------------------------------------------------------------------*)
 
-let rec fold_left_no_acc = ()
+let rec fold_left_no_acc f = function
+  |x1::x2::[] -> f x1 x2
+  |x1::x2::xs -> fold_left_no_acc f ((f x1 x2) :: xs)
+  |_  -> failwith "slab"
+  
+  
+  
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [apply_sequence f x n] vrne seznam zaporednih uporab funkcije [f] na
@@ -191,8 +199,28 @@ let rec fold_left_no_acc = ()
  # apply_sequence (fun x -> x * x) 2 (-5);;
  - : int list = []
 [*----------------------------------------------------------------------------*)
+let rec apply_sequence_ntr f x = function
+  | n when n >= 0 -> x :: apply_sequence_ntr f (f x) (n - 1)
+  | _ -> []
 
-let rec apply_sequence = ()
+
+let rec apply_sequence f x n = 
+  let rec apply_sequence_aux acc f x = function
+    | n when n >= 0 -> apply_sequence_aux (acc @ [x]) f (f x) (n-1)
+    | _ -> acc
+  in apply_sequence_aux [] f x n
+
+(*let rec apply_sequence f x = function
+  | 0 -> []
+  | n when n>0 -> let zadnji::list = zrcali (apply_sequence f x (n-1)) in zrcali ((f zadnji) :: zadnji :: list)
+  |_ -> failwith "nea mors to tak"
+
+let rec apply_sequence f x n =
+  let rec apply_sequence_aux acc f x = function
+    |0 -> 
+    |n when n>0 -> apply_sequence_aux acc f x *)
+
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [filter f list] vrne seznam elementov [list], pri katerih funkcija [f]
@@ -203,7 +231,9 @@ let rec apply_sequence = ()
  - : int list = [4; 5]
 [*----------------------------------------------------------------------------*)
 
-let rec filter = ()
+let rec filter f = function
+  |[] -> []
+  |x::xs -> if f x then x::(filter f xs) else filter f xs
 
 (*----------------------------------------------------------------------------*]
  Funkcija [exists] sprejme seznam in funkcijo, ter vrne vrednost [true] čim
@@ -217,7 +247,9 @@ let rec filter = ()
  - : bool = false
 [*----------------------------------------------------------------------------*)
 
-let rec exists = ()
+let rec exists f = function
+  |[] -> false
+  |x::xs -> if f x then true else exists f xs
 
 (*----------------------------------------------------------------------------*]
  Funkcija [first f default list] vrne prvi element seznama, za katerega
@@ -231,4 +263,6 @@ let rec exists = ()
  - : int = 0
 [*----------------------------------------------------------------------------*)
 
-let rec first = ()
+let rec first f default = function
+  |[] -> default
+  |x::xs -> if f x then x else first f default xs
