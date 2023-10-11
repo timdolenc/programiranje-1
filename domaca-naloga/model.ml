@@ -2,6 +2,7 @@
 
 type 'a grid = 'a Array.t Array.t
 
+
 (* Funkcije za prikaz mreže.
    Te definiramo najprej, da si lahko z njimi pomagamo pri iskanju napak. *)
 
@@ -29,7 +30,7 @@ let string_of_row string_of_cell row =
   in
   "┃" ^ string_of_cells ^ "┃\n"
 
-let print_grid string_of_cell grid =
+let print_grid string_of_cell grid = (**)
   let ln = "───" in
   let big = "━━━" in
   let divider = "┠" ^ ln ^ "┼" ^ ln ^ "┼" ^ ln ^ "┨\n" in
@@ -43,22 +44,25 @@ let print_grid string_of_cell grid =
 
 (* Funkcije za dostopanje do elementov mreže *)
 
-let get_row (grid : 'a grid) (row_ind : int) = failwith "TODO"
+let get_row (grid : 'a grid) (row_ind : int) = grid.(row_ind)
 
-let rows grid = failwith "TODO"
+let rows grid = List.init 9 (get_row grid) (*ustvari list od 0 do 8 in vsak element preslika z get_row torej indexe vrstic preslika v vrstice*)
 
 let get_column (grid : 'a grid) (col_ind : int) =
-  Array.init 9 (fun row_ind -> grid.(row_ind).(col_ind))
+  Array.init 9 (fun row_ind -> grid.(row_ind).(col_ind)) (*Array init 9 f najprej ustvari array [0;...;8] vzame njegove elemente kot indexe vrstic in jih preslika v elemente pripadajočih prstiv podanega stolpca*)
 
-let columns grid = List.init 9 (get_column grid)
+let columns grid = List.init 9 (get_column grid) (*ustvari list 0 do 8 in vsak element zamenja z stolpcem tega indexa*)
 
-let get_box (grid : 'a grid) (box_ind : int) = failwith "TODO"
+let get_box (grid : 'a grid) (box_ind : int) =  
+  Array.init 9 (fun ind_v_boxu -> grid.(3 * box_ind / 3 + ind_v_boxu / 3).(3 * (box_ind mod 3) + ind_v_boxu mod 3))
 
-let boxes grid = failwith "TODO"
+let boxes grid = 
+  Array.init 9 (fun box_ind -> get_box grid box_ind)
 
 (* Funkcije za ustvarjanje novih mrež *)
 
-let map_grid (f : 'a -> 'b) (grid : 'a grid) : 'b grid = failwith "TODO"
+let map_grid (f : 'a -> 'b) (grid : 'a grid) : 'b grid = 
+  Array.init 9 (fun row_ind -> Array.map f (get_row grid row_ind))
 
 let copy_grid (grid : 'a grid) : 'a grid = map_grid (fun x -> x) grid
 
@@ -78,7 +82,7 @@ let foldi_grid (f : int -> int -> 'a -> 'acc -> 'acc) (grid : 'a grid)
   in
   acc
 
-let row_of_string cell_of_char str =
+let row_of_string cell_of_char str = 
   List.init (String.length str) (String.get str) |> List.filter_map cell_of_char
 
 let grid_of_string cell_of_char str =
@@ -97,7 +101,13 @@ let grid_of_string cell_of_char str =
 
 type problem = { initial_grid : int option grid }
 
-let print_problem problem : unit = failwith "TODO"
+let print_problem problem : unit = 
+  let string_of_el x = 
+    match x with
+    | None -> " "
+    | Some st -> string_of_int st
+  in
+  print_grid string_of_el problem
 
 let problem_of_string str =
   let cell_of_char = function
@@ -111,6 +121,7 @@ let problem_of_string str =
 
 type solution = int grid
 
-let print_solution solution = failwith "TODO"
+let print_solution solution = 
+  print_grid string_of_int solution
 
 let is_valid_solution problem solution = failwith "TODO"

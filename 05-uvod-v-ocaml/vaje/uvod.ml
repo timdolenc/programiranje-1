@@ -36,14 +36,22 @@ let middle_of_triple (a, b, c) = b
     let (a,b,c) = trpl
     in b*)
 
-
+let middle_of_triple (a,b,c) = b
 (*----------------------------------------------------------------------------*]
  Funkcija [starting_element] vrne prvi element danega seznama. V primeru
  prekratkega seznama vrne napako.
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # starting_element2 [1; 2; 3; 4];;
+ # starting_element [1; 2; 3; 4];;
  - : int = 1
 [*----------------------------------------------------------------------------*)
+
+let starting_element = function
+  | x :: xs -> x 
+  | [] -> failwith "Slaba"
+
+
+
+
 
 let starting_element sez = 
   match sez with
@@ -60,9 +68,12 @@ let starting_element2 = function
  Funkcija [multiply] zmnoži vse elemente seznama. V primeru praznega seznama
  vrne vrednost, ki je smiselna za rekurzijo.
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # multiply2 [2; 4; 6];;
+ # multiply [2; 4; 6];;
  - : int = 48
 [*----------------------------------------------------------------------------*)
+
+
+
 
 let rec multiply sez = 
   match sez with
@@ -89,8 +100,10 @@ let rec multiply2 = function
 [*----------------------------------------------------------------------------*)
 
 let rec sum_int_pairs = function
-    | [] -> []
-    | (a,b) :: xs -> (a+b)  :: sum_int_pairs xs
+  | [] -> []
+  | (x,y) :: xs -> (x+y) :: sum_int_pairs xs
+
+
 
       
 
@@ -102,14 +115,21 @@ let rec sum_int_pairs = function
  # get 2 [0; 0; 1; 0; 0; 0];;
  - : int = 1
 [*----------------------------------------------------------------------------*)
+let rec get k = function
+  | x :: xs -> if k <= 0 then x else get (k-1) xs
+  | _ -> failwith "Prekr"
+
+
+
+
 let rec get k list =
   match (k,list) with
   | (_, []) -> failwith "prekr"
-  | (k, x :: tail) -> if k <= 0 then x else get (k-1, tail)
+  | (k, x :: tail) -> if k <= 0 then x else get (k-1) tail
 
 let rec get k = function (*ker je function ve, da je še en parameter*)
 | [] -> failwith "prekr"
-| x :: tail -> if k <= 0 then x else get (k-1, tail)
+| x :: tail -> if k <= 0 then x else get (k-1) tail
 
 
 (*----------------------------------------------------------------------------*]
@@ -118,10 +138,12 @@ let rec get k = function (*ker je function ve, da je še en parameter*)
  # double [1; 2; 3];;
  - : int list = [1; 1; 2; 2; 3; 3]
 [*----------------------------------------------------------------------------*)
-
 let rec double = function
-      | [] -> []
-      | x :: xs -> x :: x :: double xs
+  | x :: xs -> x :: (x :: double xs)
+  | _ -> []
+
+
+
 
 
 (*----------------------------------------------------------------------------*]
@@ -134,14 +156,18 @@ let rec double = function
  - : int list = [1; 0; 0; 0; 0; 0]
 [*----------------------------------------------------------------------------*)
 
-(*let rec insert x s list = 
-  match *)
+let rec insert x k = function
+  | h :: t -> if k <= 0 then x :: h :: t else h :: insert x (k-1) t
+  | [] -> [x]
 
-let rec insert x s = function (*h kot head, tisti parameter brez imena*)
+
+
+
+(*let rec insert x k = function (*h kot head, tisti parameter brez imena*)
   | [] -> x :: []
   | h :: tail -> 
     if k <= 0 then x :: h :: tail
-    else h :: insert x (k-1) tail 
+    else h :: insert x (k-1) tail *)
 
 (*----------------------------------------------------------------------------*]
  Funkcija [divide k list] seznam razdeli na dva seznama. Prvi vsebuje prvih [k]
@@ -153,10 +179,33 @@ let rec insert x s = function (*h kot head, tisti parameter brez imena*)
  # divide 7 [1; 2; 3; 4; 5];;
  - : int list * int list = ([1; 2; 3; 4; 5], [])
 [*----------------------------------------------------------------------------*)
+let rec divide k = function
+  | x :: xs -> if k > 0 then
+    let (prvi, drugi) = divide (k-1) xs in
+    (x :: prvi, drugi) else
+      ([], x::xs)
+  | [] -> ([], [])
 
 let rec divide k list =
   match (k, list) with
-  | (_,[]) ->  
+  | (_, []) -> ([], [])
+  | (k, list) when k <= 0 -> ([], list)
+  | (k, x :: xs) -> 
+    let (prvi, drugi) = divide (k-1) xs in
+    (x :: prvi, drugi)
+
+
+
+
+
+(*let rec divide k list =
+  match (k, list) with
+  | (_,[]) ->  ([],[]) 
+  | (k, list) when k<= 0 -> ([], list)
+  | (k, x :: xs) -> 
+    let (list1, list2) = divide (k-1) xs in
+      (x::list1, list2)*)
+  
 
 (*----------------------------------------------------------------------------*]
  Funkcija [rotate n list] seznam zavrti za [n] mest v levo. Predpostavimo, da
@@ -165,8 +214,18 @@ let rec divide k list =
  # rotate 2 [1; 2; 3; 4; 5];;
  - : int list = [3; 4; 5; 1; 2]
 [*----------------------------------------------------------------------------*)
+let rec rotate n = function
+  |[] -> []
+  |list -> let (prvi, drugi) = divide n list in
+    drugi @ prvi
+  
 
-let rec rotate = ()
+
+
+
+(*let rec rotate n = function
+  | [] -> []
+  | x :: xs -> insert x n (rotate n xs)*)
 
 (*----------------------------------------------------------------------------*]
  Funkcija [remove x list] iz seznama izbriše vse pojavitve elementa [x].
@@ -175,7 +234,9 @@ let rec rotate = ()
  - : int list = [2; 3; 2; 3]
 [*----------------------------------------------------------------------------*)
 
-let rec remove = ()
+let rec remove x = function
+  |[] -> []
+  |h :: tail -> if h = x then remove x tail else h :: (remove x tail)
 
 (*----------------------------------------------------------------------------*]
  Funkcija [is_palindrome] za dani seznam ugotovi ali predstavlja palindrom.
@@ -186,8 +247,14 @@ let rec remove = ()
  # is_palindrome [0; 0; 1; 0];;
  - : bool = false
 [*----------------------------------------------------------------------------*)
+let rec zrcali = function
+  | [] -> []
+  | x::xs -> (zrcali xs) @ [x] 
 
-let rec is_palindrome = ()
+let is_palindrome list = 
+  list = zrcali list
+  
+  
 
 (*----------------------------------------------------------------------------*]
  Funkcija [max_on_components] sprejme dva seznama in vrne nov seznam, katerega
@@ -198,7 +265,14 @@ let rec is_palindrome = ()
  - : int list = [5; 4; 3; 3; 4]
 [*----------------------------------------------------------------------------*)
 
-let rec max_on_components = ()
+let rec max_on_components l1 l2 =
+  match l1, l2 with
+  | ([],[]) -> []
+  | ([], l) -> []
+  | (l, []) -> []
+  | (x1 :: xs1, x2::xs2) -> (max x1 x2) :: (max_on_components xs1 xs2)
+
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [second_largest] vrne drugo največjo vrednost v seznamu. Pri tem se
@@ -210,4 +284,15 @@ let rec max_on_components = ()
  - : int = 10
 [*----------------------------------------------------------------------------*)
 
-let rec second_largest = ()
+let rec max_list = function
+  |[] -> failwith "prekr"
+  |[x] -> x
+  |x :: xs -> max x (max_list xs)
+
+
+
+let rec second_largest list =
+  let nov = remove (max_list list) list in
+  max_list nov
+   
+  

@@ -52,3 +52,13 @@ seznam v ocamlu je v eni izmed dveh oblik:
 let a ... = 
     let b = ... in
     izraz
+
+7. vaje
+
+kk preveris ce je potencialna resitev prava: a je problem pravi, a se stolpci pa vrstice ujemajo
+sprobamo vse moznosti in s seboj nosimo en model (stanje sudokuja, state) (int option) Model.grid (to je grid, ki ma not neke stvari tipa )
+
+int option
+int grid (to pomeni da nemors dobit none)
+
+type 'a grid = (a' array.t) Array.t

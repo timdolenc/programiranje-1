@@ -1,6 +1,4 @@
-import csv
 import os
-import requests
 import re
 
 ###############################################################################
@@ -19,19 +17,33 @@ following_ime_datoteke = "following.html"
 csv_filename = 'TODO'
 
 
-def download_url_to_string(url):
-    """Funkcija kot argument sprejme niz in poskusi vrniti vsebino te spletne
-    strani kot niz. V primeru, da med izvajanje pride do napake vrne None.
-    """
-    try:
-        # del kode, ki morda sproži napako
-        response = requests.get(url)
-        page_content = response.text
-        return page_content
-    
-    except Exception as e:
-        print(f"Napaka pri prenosu: {url} ::", e)
-        return None
+
+
+import os
+import re
+
+
+#SELENIUM##########################################
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+DRIVER_PATH = '/path/to/chromedriver'
+options = Options()
+options.headless = True
+options.add_argument("--window-size=1920,1200")
+driver = webdriver.Chrome(options=options, executable_path=DRIVER_PATH)
+####################################################
+
+# LINKI#############################################
+directory_frontpages = "/Users/timdolenc/Desktop/PROGRAMIRANJE/programiranje-1/PROJEKT_ANALIZA_PODATKOV/frontpages"
+directory_tabs = "/Users/timdolenc/Desktop/PROGRAMIRANJE/programiranje-1/PROJEKT_ANALIZA_PODATKOV/tabs"
+####################################################
+
+
+
+def download_url_to_string_selenium(url):
+    driver.get(url)
+    vsebina = driver.page_source
+    return vsebina
 
 
 
@@ -55,12 +67,12 @@ def save_string_to_file(text, directory, filename):
 def save_frontpage(page, directory, filename):
     """Funkcija shrani vsebino spletne strani na naslovu "page" v datoteko
     "directory"/"filename"."""
-    vsebina = download_url_to_string(page)
+    vsebina = download_url_to_string_selenium(page)
     save_string_to_file(vsebina, directory, filename)
     print("datoteka shranjena")
 
 
-
+save_frontpage(followers_url, directory, followers_ime_datoteke)
     
 
 

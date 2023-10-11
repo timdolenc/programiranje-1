@@ -21,6 +21,35 @@ let test_matrix =
      [| 2 ; 4 ; 5 |];
      [| 7 ; 0 ; 1 |] |]
 
+(*let rec max_cheese matrix = 
+   let rec max_cheese_acc acc1 acc2 matrix = 
+      match matrix with
+      | -> 0
+      | matrix -> matrix.(acc1).(acc2) + max (max_cheese acc1 (acc2+1) matrix) (max_cheese (acc1+1) acc2 matrix)
+   in 
+   max_cheese_acc 0 0 matrix*)
+
+(*rešitev*)
+
+let max_cheese matrix = 
+   let rec best_cheese matrix y x =
+      let current = matrix.(y).(x) in 
+      let best_right = 
+         if (x+1) = Array.length matrix.(0)
+            then 0 
+         else best_cheese matrix y (x+1)
+      in
+      let best_down =
+         if (y+1) = Array.length matrix 
+            then 0
+         else best_cheese matrix (y+1) (x)
+      in 
+      current + max best_down best_right
+   in
+   best_cheese matrix 0 0
+
+
+
 (*----------------------------------------------------------------------------*]
  Poleg količine sira, ki jo miška lahko poje, jo zanima tudi točna pot, ki naj
  jo ubere, da bo prišla do ustrezne pojedine.
@@ -39,6 +68,8 @@ let test_matrix =
 type mouse_direction = Down | Right
 
 
+
+
 (*----------------------------------------------------------------------------*]
  Rešujemo problem sestavljanja alternirajoče obarvanih stolpov. Imamo štiri
  različne tipe gradnikov, dva modra in dva rdeča. Modri gradniki so višin 2 in
@@ -54,6 +85,19 @@ type mouse_direction = Down | Right
  # alternating_towers 10;;
  - : int = 35
 [*----------------------------------------------------------------------------*)
+
+let alternating_towers h = 
+   let rec rdec_spodaj h = 
+      if h <= 0 then 0
+      else if h <= 2 then 1
+      else moder_spodaj (h-1) + moder_spodaj (h-2)
+   and moder_spodaj h =
+      if h < 2 then 0
+      else if h = 2 then 1
+      else rdec_spodaj (h-2) + rdec_spodaj (h-3) 
+   in
+   rdec_spodaj h + moder_spodaj h
+
 
 
 
